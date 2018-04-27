@@ -1,0 +1,22 @@
+code for transform:
+https://www.codeproject.com/Articles/683663/Discrete-Haar-Wavelet-Transformation
+
+The HWT is a wonderful tool for understanding how a discrete wavelet tranformation works.
+It is not desirable in practice because the filters are too short - since each filter is length two,
+the HWT decouples the data to create values of the transform. In particular, each value of the transform
+is created from a 2 x 2 block from the original input. If there is a large change between say row 6 and row 7,
+the HWT will not detect it. The HWT also send integers to irrational numbers and for lossless image compression,
+it is crucial that the transform send integers to integers. For these reasons, researchers developed more sophisticated filters.
+Be sure to check out the other subsections to learn more other types of wavelet filters.
+
+http://www.bearcave.com/misl/misl_tech/wavelets/haar.html#Introduction
+
+mean filtering, median filtering,
+
+Wavelets are a more general way to represent and analyze multiresolution images
+Wavelets are very useful for image compression as seen in the JPG-2000 standard, along with their application in noise filtering.
+
+Go to ParentThe width and height of image must be Even number and multiply of 2, because the Haar wavelet process sum up pair of
+ pixel values and divide them by 2, this proces continue until certain level.
+ 
+The Modified 2D Haar Wavelet Transformation in Image Compression
