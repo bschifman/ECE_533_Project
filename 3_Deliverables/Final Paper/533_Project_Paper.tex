@@ -1,0 +1,122 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+% \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading nips_2016
+%
+% to avoid loading the natbib package, add option nonatbib:
+% \usepackage[nonatbib]{nips_2016}
+
+%\usepackage{nips_2016}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+% \usepackage[final]{nips_2016}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{cleveref}		
+\usepackage{microtype}      % microtypography
+
+\title{An Analysis of Image Denoising Techniques}
+\usepackage[final]{nips_2016}
+
+% The \author macro works with any number of authors. There are two
+% commands used to separate the names and addresses of multiple
+% authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to
+% break the lines. Using \AND forces a line break at that point. So,
+% if LaTeX puts 3 of 4 authors names on the first line, and the last
+% on the second line, try using \AND instead of \And before the third
+% author name.
+
+\author{
+  Benjamin A. Schifman\\
+  Department of Electrical and Computer Engineering\\
+  University of Arizona\\
+  Tucson, AZ 85719 \\
+  \texttt{bschifman@email.arizona.edu} \\
+  %% examples of more authors
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \AND
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+}
+
+\begin{document}
+ 
+
+\maketitle
+
+\begin{abstract}
+  Digital de-noising techniques are used to filter out unwanted noise in a signal. In images, noisy signals are present in the form of non coherent salt and pepper noise and Gaussian noises to coherent noise introduced inherently from the imager or from signal processing algorithms. This paper examines some of the common methods for removing unwanted noise, along with implementing more complex filtering techniques in the form of wavelet filtering. 
+\end{abstract}
+
+\section{Introduction}
+ This paper explores noise filtering techniques implemented in Python and the available Python image processing library $OpenCV.$ The filters are implemented on images with random Gaussian noise and Salt and Pepper noise, and their outputs are compared. The underlying input image $FIGURE X$ and it's corresponding noisy images $Noisy IMAGES$ are in this figure. The standard library filters that were implemented were the $blur, gaussian blur, median,$ and $bilateral$ filter, and another wavelet filter, the  was also implemented for comparison.
+
+\section{Methods/Approach}
+\subsection{Noise Generation}
+Two images were generated with different noise distributions for the purpose of analyzing the efficacy of the different applied filtering techniques. The first noisy image was generated with a normal Gaussian distribution that had been scaled by a factor of $10$. The noise was scaled in order to be more visually evident in the image along with increasing the noise power in the image. Gaussian noise is generally a common form of noise that principally arises in images during acquisition and is caused by a number of factors, a few being poor illumination, high circuitry temperature, and electronic interference. The second noisy image was generated through adding a $0.4\%$ Salt and Pepper (S\&P) distribution. The S\&P noise added was equally distributed "Salt" white pixels, and "Pepper" black pixels. S\&P noise potentially occurs in images were intermittent and non-reliable image communication systems are present as they can elicit sharp and sudden disturbances in the image signal.
+\subsection{Haar Wavelet Transform}
+The Haar Transform, proposed by the Hungarian mathematician Alfr\'ed Haar is a computationally efficient method for analyzing the local aspects of an image.
+
+
+
+\section{Results}
+\subsection{Peak Signal to Noise Ratio}
+In order to analyze the utility of the aforementioned filtering techniques the Peak Signal to Noise Ratios (PSNR) for each filtered image were calculated. 
+\begin{equation}\label{eqn:PSNR}
+PSNR = 10*log_{10}\Big(\frac{MAX^2}{MSE}\Big)
+\end{equation}	 
+Where $MAX$ is the maximum grayscale pixel value for the image which in this case 256, and $MSE$ is the Mean Squared Error between the filtered output image and the noisy image.
+\section{Conclusion}
+
+\section*{References}
+
+References follow the acknowledgments. Use unnumbered first-level
+heading for the references. Any choice of citation style is acceptable
+as long as you are consistent. It is permissible to reduce the font
+size to \verb+small+ (9 point) when listing the references. {\bf
+  Remember that you can use a ninth page as long as it contains
+  \emph{only} cited references.}
+\medskip
+
+\small
+
+[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms
+for connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and
+T.K.\ Leen (eds.), {\it Advances in Neural Information Processing
+  Systems 7}, pp.\ 609--616. Cambridge, MA: MIT Press.
+
+[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS:
+  Exploring Realistic Neural Models with the GEneral NEural SImulation
+  System.}  New York: TELOS/Springer--Verlag.
+
+[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of
+learning and recall at excitatory recurrent synapses and cholinergic
+modulation in rat hippocampal region CA3. {\it Journal of
+  Neuroscience} {\bf 15}(7):5249-5262.
+
+\end{document}
