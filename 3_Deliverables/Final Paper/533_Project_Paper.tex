@@ -14,13 +14,19 @@
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
+\usepackage[hidelinks]{hyperref}       % hyperlinks
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{cleveref}		
 \usepackage{microtype}      % microtypography
+\usepackage{listings}
+\usepackage{mathtools} 
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{csvsimple}
+
 
 \title{An Analysis of Image Denoising Techniques}
 \usepackage[final]{nips_2016}
@@ -74,24 +80,85 @@
 \end{abstract}
 
 \section{Introduction}
- This paper explores noise filtering techniques implemented in Python and the available Python image processing library $OpenCV.$ The filters are implemented on images with random Gaussian noise and Salt and Pepper noise, and their outputs are compared. The underlying input image $FIGURE X$ and it's corresponding noisy images $Noisy IMAGES$ are in this figure. The standard library filters that were implemented were the $blur, gaussian blur, median,$ and $bilateral$ filter, and another wavelet filter, the  was also implemented for comparison.
+ This paper explores noise filtering techniques implemented in Python and an available Python image processing library $OpenCV.$ The filters are implemented on images with random Gaussian noise and Salt and Pepper noise, and their output Peak Signal to Noise Ratios are compared. The two $python$ files are detailed in section \ref{Software_Lisiting}. The underlying input image $FIGURE X$ and it's corresponding noisy images $Noisy IMAGES$ are in this figure. The standard filters that were implemented using the $OpenCV$ library were the: \textit{blur, gaussian blur, median} and \textit{bilateral} filter and the filter windows were varied in order to generate the optimal resulting filter. The Haar Wavelet Transform was implemented by hand, and the Daubechies 4 wavelet was implemented using the available $PyWavelets$ library after an attempt by hand of the algorithm was unsuccessful.
 
 \section{Methods/Approach}
 \subsection{Noise Generation}
 Two images were generated with different noise distributions for the purpose of analyzing the efficacy of the different applied filtering techniques. The first noisy image was generated with a normal Gaussian distribution that had been scaled by a factor of $10$. The noise was scaled in order to be more visually evident in the image along with increasing the noise power in the image. Gaussian noise is generally a common form of noise that principally arises in images during acquisition and is caused by a number of factors, a few being poor illumination, high circuitry temperature, and electronic interference. The second noisy image was generated through adding a $0.4\%$ Salt and Pepper (S\&P) distribution. The S\&P noise added was equally distributed "Salt" white pixels, and "Pepper" black pixels. S\&P noise potentially occurs in images were intermittent and non-reliable image communication systems are present as they can elicit sharp and sudden disturbances in the image signal.
 \subsection{Haar Wavelet Transform}
-The Haar Transform, proposed by the Hungarian mathematician Alfr\'ed Haar is a computationally efficient method for analyzing the local aspects of an image.
+The Haar Wavelet Transform (HWT), proposed by the Hungarian mathematician Alfr\'ed Haar is a computationally efficient method for analyzing the local aspects of an image. A key advantage to the use and implementation of the HWT is in it simplicity to compute, along with it being easier to understand than most other wavelet transforms. A great benefit to using the HWT is that it is effective in signal and image compression.The HWT can be expressed in terms of matrix operations such that the Forward HWT is:  
+
+\begin{equation}\label{eqn:Forward_HWT}
+y_{n} = W_{n}v_{n}
+\end{equation}	 
+ 
+ where $v_{n}$ is the input vector to be transformed, $W_{n}$ is the HWT matrix, and $y_{n}$ is the transformed output vector. This calculation can be even more easily illustrated in the form of the following expanded graphic that details the Haar transform of an input vector of length $8$, its corresponding Haar Matrix $W_{8}$, and its output vector which is simply the mean of two sequential pixel elements for the first half of the vector, and then the difference of two sequential pixel elements divided by two for the second half of the output vector. 
+ 
+ \begin{figure}[h!]
+ 	\centering
+	\includegraphics[width=\linewidth]{../../1_Resources/images/Haar_matrix_8.png}
+	\caption{Haar Transform}
+ 	\label{fig:Haar_Forward}
+ \end{figure}
+ 
+ The algorithm for this vector-wise HWT can be found in the $OneD\textunderscore HWT$ function in the $DWT.py$ file. On a 2D image the HWT is first calculated on the rows of the image, and then the HWT is calculated on the columns of the image and this implementation can be found in the $TwoD\textunderscore HWT$ in the $DWT.py$ file. This 2D function also accounts for multiple iterations of the HWT in that each following iteration will reduce the image into smaller sub-wavelets.  
+ And the Inverse HWT can be calculated by the following equation with the same variables:
+ 
+ \begin{equation}\label{eqn:Inverse_HWT}
+ x_{n} = H^Ty_{n}
+ \end{equation}
+ 
+ The HWT can be 
+\subsection{Thresholding}
+Pixel thresholding is often a simple but efficient non-linear denoising approach during the application of a wavelet transform. The thresholding is performed on the wavelet transformed image, and then the image is inverse wavelet transformed to yield a filtered output image. To determine the best threshold value to set, the $detThreshold$ function from $dataSetup.py$ was used. The function first iterates through threshold values, then thresholds the Haar Wavelet Transformed image, then inverse Haar Wavelet Transforms the thresholded image, and finally calculates the Peak Signal to Noise ratio of the filtered image. The threshold is chosen based off of the one that results in the largest Peak Signal to Noise Ratio. \\\\
+Hard Thresholding   
+\begin{equation}\label{eqn:Hard Threshold}
+D^H(d|T) =
+\begin{cases}
+0, & \text{if $|d| \leq T$} \\
+d, & \text{if $|d| > T$} \\
+\end{cases}
+\end{equation}	
+Soft Thresholding
+\begin{equation}\label{eqn:Soft Threshold}
+D^S(d|T) =
+\begin{cases}
+0, & \text{if $|d| \leq T$} \\
+d-T, & \text{if $d > T$} \\
+d+T, & \text{if $d < -T$}
+\end{cases}
+\end{equation} 
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{../../1_Resources/images/hard_thresholding.png}
+		\caption{Hard Threshold.}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{../../1_Resources/images/soft_thresholding.png}
+		\caption{Soft Threshold.}
+	\end{subfigure}	
+	\caption{Thresholding Methods}
+	\label{fig:thresholding}
+\end{figure}
+
 
 
 
 \section{Results}
 \subsection{Peak Signal to Noise Ratio}
-In order to analyze the utility of the aforementioned filtering techniques the Peak Signal to Noise Ratios (PSNR) for each filtered image were calculated. 
+In order to analyze the utility of the aforementioned filtering techniques the Peak Signal to Noise Ratios (PSNR) for each filtered image was calculated. The PSNR of an image is the maximum power of an image and the power of the image noise. The following equation \ref{eqn:PSNR} details the calculations for PSNR.
 \begin{equation}\label{eqn:PSNR}
 PSNR = 10*log_{10}\Big(\frac{MAX^2}{MSE}\Big)
 \end{equation}	 
-Where $MAX$ is the maximum grayscale pixel value for the image which in this case 256, and $MSE$ is the Mean Squared Error between the filtered output image and the noisy image.
+Where $MAX$ is the maximum grayscale pixel value for the image which in this case 256, and $MSE$ is the Mean Squared Error between the filtered output image and the noisy image. By taking the maximum pixel 
 \section{Conclusion}
+
+
+\csvautotabular{../../2_Software/psnr_1.csv}
+
+
+
 
 \section*{References}
 
@@ -119,4 +186,10 @@ learning and recall at excitatory recurrent synapses and cholinergic
 modulation in rat hippocampal region CA3. {\it Journal of
   Neuroscience} {\bf 15}(7):5249-5262.
 
+
+\section{Software Lisiting}\label{Software_Lisiting}
+\subsection{dataSetup}
+%\lstinputlisting[language=Python]{../../2_Software/dataSetup.py}
+\subsection{DWT}
+%\lstinputlisting[language=Python]{../../2_Software/DWT.py}
 \end{document}

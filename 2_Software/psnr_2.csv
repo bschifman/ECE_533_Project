@@ -1,0 +1,7 @@
+Filter,PSNR Gaussian,PSNR SP
+Blur,33.651,51.42
+Gaussian Blur,33.91,51.42
+Meidan,34.07,51.42
+Bilateral,33.043,33.293
+Soft HWT,26.055,26.684
+Hard HWT,30.849,31.156
