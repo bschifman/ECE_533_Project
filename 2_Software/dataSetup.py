@@ -22,10 +22,11 @@ def genNoisy():
     gauss_noise = np.uint8(np.random.normal(loc=mu, scale=std,size=(N_rows, N_cols)))
     std_gauss   = np.std(gauss_noise)
     cman_gnoise = cman + gauss_noise
-    cman_gnoise = np.uint8(np.clip(cman_gnoise, 0, 255))
+#    cman_gnoise = np.uint8(np.clip(cman_gnoise, 0, 255))
+    cman_gnoise = np.uint8(cman_gnoise)
     #Salt and Pepper
     s_vs_p = 0.5
-    amount = 0.004
+    amount = 0.008
     cman_spnoise = np.copy(cman)
     num_salt_pepper = np.ceil(amount * cman.size * s_vs_p)
     s_coords = [np.random.randint(0, i - 1, int(num_salt_pepper)) for i in cman.shape]
@@ -80,7 +81,7 @@ def detFilterLength(img_gnoise, img_spnoise, img):
         
     i = 0 
     psnr_hist = []
-    while(i < 10):
+    while(i < 5):
         g_out['blur'], g_out['gblur'], g_out['median'], g_out['bilateral'] = standardFilters(img_gnoise,  filter_length_temp, 0)
         sp_out['blur'], sp_out['gblur'], sp_out['median'], sp_out['bilateral'] = standardFilters(img_spnoise, filter_length_temp, 0)
         psnr_curr = detFilterPSNR(g_out, sp_out, img)
@@ -103,14 +104,12 @@ def detFilterLength(img_gnoise, img_spnoise, img):
 def peakSNR(g_out, sp_out, img):
     psnr_output = pd.DataFrame(pd.np.zeros((len(g_out), 2)))
     i = 0
-    print('Gaussian Noise')
     for filter in g_out:
         mse = mean_squared_error(img, g_out[filter])    
         psnr_output.iloc[i,0] = np.round(10*np.log10((g_out[filter].max()**2)/mse), 3)
         i += 1
         
     i = 0        
-    print('\nSalt and Pepper Noise')
     for filter in sp_out:
         mse = mean_squared_error(img, sp_out[filter])    
         psnr_output.iloc[i,1] = np.round(10*np.log10((sp_out[filter].max()**2)/mse), 3)
@@ -122,13 +121,14 @@ def peakSNR(g_out, sp_out, img):
     
     
 #%%
-def detThreshold(HWT_g, HWT_sp, std, img):
-    N = 10
-    psnr = np.zeros((N,4))
-    T = np.zeros(4)
+def detThreshold(HWT_g, HWT_sp, DB4T_g, DB4T_sp, std, img):
+    N = 20
+    psnr = np.zeros((N,8))
+    T = np.zeros(8)
     
-    def detPeakSNR(iHWTg_soft, iHWTg_hard, iHWTsp_soft, iHWTsp_hard, img, psnr, i):
-
+    def detPeakSNR(iHWTg_soft, iHWTg_hard, iHWTsp_soft, iHWTsp_hard, iDB4Tg_soft, iDB4Tg_hard, iDB4Tsp_soft, iDB4Tsp_hard,
+                   img, psnr, i):
+        #HAAR WAVELETS
         mse = mean_squared_error(img, iHWTg_soft)    
         psnr[i,0] = 10*np.log10((iHWTg_soft.max()**2)/mse)
         
@@ -140,31 +140,59 @@ def detThreshold(HWT_g, HWT_sp, std, img):
         
         mse = mean_squared_error(img, iHWTsp_hard)    
         psnr[i,3] = 10*np.log10((iHWTsp_hard.max()**2)/mse)
+        
+# =============================================================================
+        #DB4 WAVELETS
+        mse = mean_squared_error(img, iDB4Tg_soft)    
+        psnr[i,4] = 10*np.log10((iDB4Tg_soft.max()**2)/mse)
+         
+        mse = mean_squared_error(img, iDB4Tg_hard)    
+        psnr[i,5] = 10*np.log10((iDB4Tg_hard.max()**2)/mse)
+         
+        mse = mean_squared_error(img, iDB4Tsp_soft)    
+        psnr[i,6] = 10*np.log10((iDB4Tsp_soft.max()**2)/mse)
+         
+        mse = mean_squared_error(img, iDB4Tsp_hard)    
+        psnr[i,7] = 10*np.log10((iDB4Tsp_hard.max()**2)/mse)
+
         return (psnr)
     
     i = 1
     while(i < N):
-#        temp_g_low = HWT_g[:np.int(len(HWT_g)/2), :np.int(len(HWT_g)/2)]
+        #HAAR WAVELETS
         HWT_g_hard = pywt.threshold(HWT_g, 0.5*i*std, 'hard')
         HWT_g_soft = pywt.threshold(HWT_g, 0.5*i*std, 'soft')
-        
-#        HWT_g_hard[:np.int(len(HWT_g)/2), :np.int(len(HWT_g)/2)] = temp_g_low
-#        HWT_g_soft[:np.int(len(HWT_g)/2), :np.int(len(HWT_g)/2)] = temp_g_low
-        
+            
         iHWTg_hard = dwt.TwoD_IHWT(HWT_g_hard, 1)
-        iHWTg_soft = dwt.TwoD_IHWT(HWT_g_soft, 1)        
-        
-#        temp_sp_low = HWT_g[:np.int(len(HWT_g)/2), :np.int(len(HWT_g)/2)]
+        iHWTg_soft = dwt.TwoD_IHWT(HWT_g_soft, 1)    
+
         HWT_sp_hard = pywt.threshold(HWT_sp, 0.5*i*std, 'hard')
         HWT_sp_soft = pywt.threshold(HWT_sp, 0.5*i*std, 'soft')
         
-#        HWT_sp_hard[:np.int(len(HWT_g)/2), :np.int(len(HWT_g)/2)] = temp_sp_low
-#        HWT_sp_soft[:np.int(len(HWT_g)/2), :np.int(len(HWT_g)/2)] = temp_sp_low
-        
         iHWTsp_hard = dwt.TwoD_IHWT(HWT_sp_hard, 1)
         iHWTsp_soft = dwt.TwoD_IHWT(HWT_sp_soft, 1)
+# =============================================================================        
+        #DB4 WAVELETS        
+        temp1 = np.array(pywt.threshold(DB4T_g[0], 0.5*i*std, 'soft'))
+        temp2 = np.array(pywt.threshold(DB4T_g[1], 0.5*i*std, 'soft'))
         
-        psnr = detPeakSNR(iHWTg_soft, iHWTg_hard, iHWTsp_soft, iHWTsp_hard, img, psnr, i)
+        temp3 = np.array(pywt.threshold(DB4T_sp[0], 0.5*i*std, 'soft'))
+        temp4 = np.array(pywt.threshold(DB4T_sp[1], 0.5*i*std, 'soft'))
+        
+        iDB4Tg_soft = pywt.idwt2((temp1,(temp2)),'db4')
+        iDB4Tsp_soft = pywt.idwt2((temp3,(temp4)),'db4')
+        
+        temp1 = np.array(pywt.threshold(DB4T_g[0], 0.5*i*std, 'hard'))
+        temp2 = np.array(pywt.threshold(DB4T_g[1], 0.5*i*std, 'hard'))
+        
+        temp3 = np.array(pywt.threshold(DB4T_sp[0], 0.5*i*std, 'hard'))
+        temp4 = np.array(pywt.threshold(DB4T_sp[1], 0.5*i*std, 'hard'))
+        
+        iDB4Tg_hard = pywt.idwt2((temp1,(temp2)),'db4')
+        iDB4Tsp_hard = pywt.idwt2((temp3,(temp4)),'db4')           
+        
+        psnr = detPeakSNR(iHWTg_soft, iHWTg_hard, iHWTsp_soft, iHWTsp_hard, iDB4Tg_soft, iDB4Tg_hard, iDB4Tsp_soft, iDB4Tsp_hard,
+                   img, psnr, i)
         i += 1
         
     psnr[0,:] = np.nan
@@ -175,7 +203,7 @@ def detThreshold(HWT_g, HWT_sp, std, img):
 #%%
 def pltDetThreshold(psnr):
     plt.figure()
-    plt.title('PSNR vs Threshold Value for Gaussian Noise')
+    plt.title('Haar PSNR vs Threshold for Gaussian Noise')
     plt.ylabel('PSNR')
     plt.xlabel('Threshold*0.5*$\sigma$')
     plt.plot(psnr[:,0], color='green', label='Soft Threshold')
@@ -183,11 +211,27 @@ def pltDetThreshold(psnr):
     plt.legend()
     
     plt.figure()
-    plt.title('PSNR vs Threshold Value for Salt & Pepper Noise')
+    plt.title('Haar PSNR vs Threshold for S&P Noise')
     plt.ylabel('PSNR')
     plt.xlabel('Threshold*0.5*$\sigma$')
     plt.plot(psnr[:,2], color='green', label='Soft Threshold')
     plt.plot(psnr[:,3], color='black', label='Hard Threshold')
+    plt.legend()
+    
+    plt.figure()
+    plt.title('DB4 PSNR vs Threshold for Gaussian Noise')
+    plt.ylabel('PSNR')
+    plt.xlabel('Threshold*0.5*$\sigma$')
+    plt.plot(psnr[:,4], color='green', label='Soft Threshold')
+    plt.plot(psnr[:,5], color='black', label='Hard Threshold')
+    plt.legend()
+    
+    plt.figure()
+    plt.title('DB4 PSNR vs Threshold for S&P Noise')
+    plt.ylabel('PSNR')
+    plt.xlabel('Threshold*0.5*$\sigma$')
+    plt.plot(psnr[:,6], color='green', label='Soft Threshold')
+    plt.plot(psnr[:,7], color='black', label='Hard Threshold')
     plt.legend()
 
 #%%
@@ -202,7 +246,7 @@ def pltPSNRFilters(psnr_hist):
     bilateral_psnr_sp = np.zeros(len(psnr_hist))
     xaxis             = np.zeros(len(psnr_hist))
     k = 1
-    i = 1
+    i = 0
     while(i < len(psnr_hist)):
         j = 0   
         blur_psnr_g[i]       = psnr_hist[i][0,j]
@@ -214,7 +258,7 @@ def pltPSNRFilters(psnr_hist):
         gblur_psnr_sp[i]     = psnr_hist[i][1,j]
         median_psnr_sp[i]    = psnr_hist[i][2,j]
         bilateral_psnr_sp[i] = psnr_hist[i][3,j] 
-        xaxis[i-1]             = k
+        xaxis[i]             = k
         k += 2
         i += 1
 
@@ -222,25 +266,24 @@ def pltPSNRFilters(psnr_hist):
     plt.figure()
     plt.title('PSNR vs Filter Length w/ Gaussian Noise')
     plt.xlabel('Filter Length')
-    plt.xlim(xmin=1, xmax=9)
-    plt.ylim(25, 40)
     plt.ylabel('PSNR (dB)')
-    plt.plot(xaxis, blur_psnr_g,      label='blur'     )
-    plt.plot(xaxis, gblur_psnr_g,     label='gblur'    )
-    plt.plot(xaxis, median_psnr_g,    label='median'   )
-    plt.plot(xaxis, bilateral_psnr_g, label='bilateral')
+    plt.plot(range(1,11,2), blur_psnr_g,      label='blur'     )
+    plt.plot(range(1,11,2), gblur_psnr_g,     label='gblur'    )
+    plt.plot(range(1,11,2), median_psnr_g,    label='median'   )
+    plt.plot(range(1,11,2), bilateral_psnr_g, label='bilateral')
     plt.legend()
     
     plt.figure()
     plt.title('PSNR vs Filter Length w/ S&P Noise')
     plt.xlabel('Filter Length')
-    plt.xlim(xmin=1, xmax=9)
-    plt.ylim(25, 40)
+    plt.xlim(0,5)
+    plt.xticks(xaxis)
+    plt.ylim(30, 52)
     plt.ylabel('PSNR (dB)')
-    plt.plot(blur_psnr_sp,     label='blur'     )
-    plt.plot(gblur_psnr_sp,    label='gblur'    )
-    plt.plot(median_psnr_sp,   label='median'   )
-    plt.plot(bilateral_psnr_sp,label='bilateral')
+    plt.plot(range(1,11,2), blur_psnr_sp,     label='blur'     )
+    plt.plot(range(1,11,2), gblur_psnr_sp,    label='gblur'    )
+    plt.plot(range(1,11,2), median_psnr_sp,   label='median'   )
+    plt.plot(range(1,11,2), bilateral_psnr_sp,label='bilateral')
     plt.legend()
     
 #%%Filtering
@@ -250,53 +293,78 @@ def standardFilters(img, f_length, j):
     median = cv2.medianBlur(img,f_length[2,j])
     bilateral = cv2.bilateralFilter(img,9,75,75)
     return(blur, gblur, median, bilateral)
+#%%Save Images    
+def outputImages(g_out, sp_out, cman_gnoise, cman_spnoise):
+    cv2.imwrite('data/cman_gnoise.png', cman_gnoise)
+    cv2.imwrite('data/cman_spnoise.png', cman_spnoise)
+    for filter in g_out:
+        file_path = 'data/' + filter + '_g.png'
+        cv2.imwrite(file_path, g_out[filter])
+    for filter in sp_out:
+        file_path = 'data/' + filter + '_sp.png'
+        cv2.imwrite(file_path, sp_out[filter])
  
-#%%Thresholding
-#    pywt.threshold(data, 2, 'hard')
 #%%
 s_time = time.clock()
 cman_gnoise, cman_spnoise, std = genNoisy()
 iterations = 1
 g_out = {'blur' : np.zeros(0), 'gblur' : np.zeros(0),
-           'median' : np.zeros(0), 'bilateral' : np.zeros(0), 'IHWT_soft' : np.zeros(0), 'IHWT_hard' : np.zeros(0)}
+           'median' : np.zeros(0), 'bilateral' : np.zeros(0), 'IHWT_soft' : np.zeros(0),
+           'IHWT_hard' : np.zeros(0), 'IDB4T_hard' : np.zeros(0), 'IDB4T_hard' : np.zeros(0)}
            
 sp_out = {'blur' : np.zeros(0), 'gblur' : np.zeros(0),
-           'median' : np.zeros(0), 'bilateral' : np.zeros(0), 'IHWT_soft' : np.zeros(0), 'IHWT_hard' : np.zeros(0)}
+           'median' : np.zeros(0), 'bilateral' : np.zeros(0), 'IHWT_soft' : np.zeros(0), 'IHWT_hard' : np.zeros(0),
+           'IDB4T_hard' : np.zeros(0), 'IDB4T_hard' : np.zeros(0)}
 
 HWT_g = dwt.TwoD_HWT(cman_gnoise,iterations)
 HWT_sp = dwt.TwoD_HWT(cman_spnoise,iterations)
-
-db4 = pywt.Wavelet('db4')
-DB4T_g = pywt.wavedec(cman_gnoise, db4, mode='symmetric', level=2, axis=-1)
-DB4T_sp = pywt.wavedec(cman_spnoise, db4, mode='symmetric', level=2, axis=-1)
-
+DB4T_g = pywt.dwt2(cman_gnoise, 'db4')
+DB4T_sp = pywt.dwt2(cman_spnoise, 'db4')
 
 #This section need only be run once per new image to attain the appropriate Threshold value
-# =============================================================================
-# psnr, T = detThreshold(HWT_g, HWT_sp, std, cman)
-# pltDetThreshold(psnr)
-# =============================================================================
+#psnr, T, g_out[' = detThreshold(HWT_g, HWT_sp, DB4T_g, DB4T_sp, std, cman)
+#pltDetThreshold(psnr)
 
 f_length, psnr_best, psnr_hist = detFilterLength(cman_gnoise, cman_spnoise, cman)
-pltPSNRFilters(psnr_hist)
+#pltPSNRFilters(psnr_hist)
 
 g_out['blur'], g_out['gblur'], g_out['median'], g_out['bilateral'] = standardFilters(cman_gnoise, f_length, 0)
 sp_out['blur'], sp_out['gblur'], sp_out['median'], sp_out['bilateral'] = standardFilters(cman_spnoise, f_length, 1)
 
-#Gaussian Noise Thresholding and Inverese Transform
+#Gaussian Noise Thresholding and Inverese Haar Transform
 HWT_soft_g = pywt.threshold(HWT_g, T[0]*0.5*std, 'soft')
 HWT_hard_g = pywt.threshold(HWT_g, T[1]*0.5*std, 'hard')
 g_out['IHWT_soft']= dwt.TwoD_IHWT(HWT_soft_g,iterations)
 g_out['IHWT_hard'] = dwt.TwoD_IHWT(HWT_hard_g,iterations)
 
-#Salt & Pepper Noise, Thresholding, and Inverese Transform
+#Salt & Pepper Noise, Thresholding, and Inverese Haar Transform
 HWT_soft_sp = pywt.threshold(HWT_sp, T[2]*0.5*std, 'soft')
 HWT_hard_sp = pywt.threshold(HWT_sp, T[3]*0.5*std, 'hard')
 sp_out['IHWT_soft']= dwt.TwoD_IHWT(HWT_soft_sp,iterations)
 sp_out['IHWT_hard'] = dwt.TwoD_IHWT(HWT_hard_sp,iterations)
 
+#Gaussian Noise and S&P Thresholding for Inverese DB4 Transform
+temp1 = np.array(pywt.threshold(DB4T_g[0], T[4]*0.5*std, 'soft'))
+temp2 = np.array(pywt.threshold(DB4T_g[1], T[4]*0.5*std, 'soft'))
+
+temp3 = np.array(pywt.threshold(DB4T_sp[0], T[6]*0.5*std, 'soft'))
+temp4 = np.array(pywt.threshold(DB4T_sp[1], T[6]*0.5*std, 'soft'))
+
+g_out['IDB4T_soft'] = pywt.idwt2((temp1,(temp2)),'db4')
+sp_out['IDB4T_soft'] = pywt.idwt2((temp3,(temp4)),'db4')
+
+temp1 = np.array(pywt.threshold(DB4T_g[0], T[5]*0.5*std, 'hard'))
+temp2 = np.array(pywt.threshold(DB4T_g[1], T[5]*0.5*std, 'hard'))
+
+temp3 = np.array(pywt.threshold(DB4T_sp[0], T[7]*0.5*std, 'hard'))
+temp4 = np.array(pywt.threshold(DB4T_sp[1], T[7]*0.5*std, 'hard'))
+
+g_out['IDB4T_hard'] = pywt.idwt2((temp1,(temp2)),'db4')
+sp_out['IDB4T_hard'] = pywt.idwt2((temp3,(temp4)),'db4')
+
 peakSNR(g_out, sp_out, cman)
 #pltFilters(g_out, sp_out)
+outputImages(g_out, sp_out, cman_gnoise, cman_spnoise)
 
 e_time = time.clock()
 t_time = e_time - s_time

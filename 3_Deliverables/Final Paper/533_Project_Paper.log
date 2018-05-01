@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2016.12.8)  29 APR 2018 23:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2016.12.8)  30 APR 2018 23:44
 entering extended mode
 **./533_Project_Paper.tex
 (533_Project_Paper.tex
@@ -754,7 +754,14 @@ Package: geometry 2010/09/12 v5.6 Page Geometry
 \@nipsabovecaptionskip=\skip57
 \@nipsbelowcaptionskip=\skip58
 )
-(533_Project_Paper.aux)
+(533_Project_Paper.aux
+
+LaTeX Warning: Label `fig:psnr_threshold' multiply defined.
+
+
+LaTeX Warning: Label `fig:psnr_threshold@cref' multiply defined.
+
+)
 \openout1 = `533_Project_Paper.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 73.
@@ -777,7 +784,8 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
 \AtBeginShipoutBox=\box30
 Package hyperref Info: Link coloring OFF on input line 73.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
@@ -939,74 +947,177 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 78.
+
+<../../2_Software/data/cman_gnoise.png, id=53, 513.92pt x 513.92pt>
+File: ../../2_Software/data/cman_gnoise.png Graphic file (type png)
+
+<use ../../2_Software/data/cman_gnoise.png>
+Package pdftex.def Info: ../../2_Software/data/cman_gnoise.png used on input li
+ne 92.
+(pdftex.def)             Requested size: 178.86702pt x 178.87094pt.
+
+<../../2_Software/data/cman_spnoise.png, id=54, 513.92pt x 513.92pt>
+File: ../../2_Software/data/cman_spnoise.png Graphic file (type png)
+
+<use ../../2_Software/data/cman_spnoise.png>
+Package pdftex.def Info: ../../2_Software/data/cman_spnoise.png used on input l
+ine 96.
+(pdftex.def)             Requested size: 178.86702pt x 178.87094pt.
  [1
 
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
-<../../1_Resources/images/Haar_matrix_8.png, id=60, 474.0568pt x 139.37785pt>
+<../../1_Resources/images/Haar_matrix_8.png, id=70, 474.0568pt x 139.37785pt>
 File: ../../1_Resources/images/Haar_matrix_8.png Graphic file (type png)
 
 <use ../../1_Resources/images/Haar_matrix_8.png>
 Package pdftex.def Info: ../../1_Resources/images/Haar_matrix_8.png used on inp
-ut line 99.
+ut line 121.
 (pdftex.def)             Requested size: 397.48499pt x 116.87029pt.
-
-
-LaTeX Warning: Command \textunderscore invalid in math mode on input line 104.
-
-
-LaTeX Warning: Command \textunderscore invalid in math mode on input line 104.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 113--115
-
- []
-
-
-<../../1_Resources/images/hard_thresholding.png, id=62, 292.09125pt x 234.8775p
-t>
-File: ../../1_Resources/images/hard_thresholding.png Graphic file (type png)
- <use ../../1_Resources/images/hard_thresholding.png>
-Package pdftex.def Info: ../../1_Resources/images/hard_thresholding.png used on
- input line 134.
-(pdftex.def)             Requested size: 158.99156pt x 127.85338pt.
-
-<../../1_Resources/images/soft_thresholding.png, id=63, 298.11375pt x 231.00589
-pt>
-File: ../../1_Resources/images/soft_thresholding.png Graphic file (type png)
- <use ../../1_Resources/images/soft_thresholding.png>
-Package pdftex.def Info: ../../1_Resources/images/soft_thresholding.png used on
- input line 138.
-(pdftex.def)             Requested size: 158.99156pt x 123.20094pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[2 <../../1_Resources/images/Haar_matrix_8.png>]
+
+LaTeX Warning: Command \textunderscore invalid in math mode on input line 126.
+
+
+LaTeX Warning: Command \textunderscore invalid in math mode on input line 126.
+
+[2 <../../2_Software/data/cman_gnoise.png (PNG copy)> <../../2_Software/data/cm
+an_spnoise.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 137--140
+
+ []
+
+
+<../../1_Resources/images/hard_thresholding.png, id=87, 292.09125pt x 234.8775p
+t>
+File: ../../1_Resources/images/hard_thresholding.png Graphic file (type png)
+ <use ../../1_Resources/images/hard_thresholding.png>
+Package pdftex.def Info: ../../1_Resources/images/hard_thresholding.png used on
+ input line 159.
+(pdftex.def)             Requested size: 158.99156pt x 127.85338pt.
+
+<../../1_Resources/images/soft_thresholding.png, id=88, 298.11375pt x 231.00589
+pt>
+File: ../../1_Resources/images/soft_thresholding.png Graphic file (type png)
+ <use ../../1_Resources/images/soft_thresholding.png>
+Package pdftex.def Info: ../../1_Resources/images/soft_thresholding.png used on
+ input line 163.
+(pdftex.def)             Requested size: 158.99156pt x 123.20094pt.
+
+<../../1_Resources/images/filter_length_g.png, id=89, 462.528pt x 336.7782pt>
+File: ../../1_Resources/images/filter_length_g.png Graphic file (type png)
+
+<use ../../1_Resources/images/filter_length_g.png>
+Package pdftex.def Info: ../../1_Resources/images/filter_length_g.png used on i
+nput line 175.
+(pdftex.def)             Requested size: 178.86702pt x 130.23811pt.
+
+<../../1_Resources/images/filter_length_sp.png, id=90, 462.528pt x 336.7782pt>
+File: ../../1_Resources/images/filter_length_sp.png Graphic file (type png)
+
+<use ../../1_Resources/images/filter_length_sp.png>
+Package pdftex.def Info: ../../1_Resources/images/filter_length_sp.png used on 
+input line 179.
+(pdftex.def)             Requested size: 178.86702pt x 130.23811pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<../../1_Resources/images/DB4_threshold_g.png, id=91, 462.528pt x 336.7782pt>
+File: ../../1_Resources/images/DB4_threshold_g.png Graphic file (type png)
+
+<use ../../1_Resources/images/DB4_threshold_g.png>
+Package pdftex.def Info: ../../1_Resources/images/DB4_threshold_g.png used on i
+nput line 189.
+(pdftex.def)             Requested size: 178.86702pt x 130.23811pt.
+
+<../../1_Resources/images/DB4_threshold_sp.png, id=92, 462.528pt x 336.7782pt>
+File: ../../1_Resources/images/DB4_threshold_sp.png Graphic file (type png)
+
+<use ../../1_Resources/images/DB4_threshold_sp.png>
+Package pdftex.def Info: ../../1_Resources/images/DB4_threshold_sp.png used on 
+input line 193.
+(pdftex.def)             Requested size: 178.86702pt x 130.23811pt.
+
+<../../1_Resources/images/HWT_threshold_g.png, id=93, 462.528pt x 336.7782pt>
+File: ../../1_Resources/images/HWT_threshold_g.png Graphic file (type png)
+
+<use ../../1_Resources/images/HWT_threshold_g.png>
+Package pdftex.def Info: ../../1_Resources/images/HWT_threshold_g.png used on i
+nput line 197.
+(pdftex.def)             Requested size: 178.86702pt x 130.23811pt.
+
+<../../1_Resources/images/HWT_threshold_sp.png, id=94, 462.528pt x 336.7782pt>
+File: ../../1_Resources/images/HWT_threshold_sp.png Graphic file (type png)
+
+<use ../../1_Resources/images/HWT_threshold_sp.png>
+Package pdftex.def Info: ../../1_Resources/images/HWT_threshold_sp.png used on 
+input line 201.
+(pdftex.def)             Requested size: 178.86702pt x 130.23811pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[3 <../../1_Resources/images/Haar_matrix_8.png> <../../1_Resources/images/hard_
+thresholding.png> <../../1_Resources/images/soft_thresholding.png>]
+<../../2_Software/data/cman_512_512.png, id=105, 513.92pt x 513.92pt>
+File: ../../2_Software/data/cman_512_512.png Graphic file (type png)
+
+<use ../../2_Software/data/cman_512_512.png>
+Package pdftex.def Info: ../../2_Software/data/cman_512_512.png used on input l
+ine 219.
+(pdftex.def)             Requested size: 178.86702pt x 178.87094pt.
+File: ../../2_Software/data/cman_gnoise.png Graphic file (type png)
+
+<use ../../2_Software/data/cman_gnoise.png>
+Package pdftex.def Info: ../../2_Software/data/cman_gnoise.png used on input li
+ne 223.
+(pdftex.def)             Requested size: 178.86702pt x 178.87094pt.
+File: ../../2_Software/data/cman_spnoise.png Graphic file (type png)
+
+<use ../../2_Software/data/cman_spnoise.png>
+Package pdftex.def Info: ../../2_Software/data/cman_spnoise.png used on input l
+ine 227.
+(pdftex.def)             Requested size: 178.86702pt x 178.87094pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4 <../../1_Resources/images/filter_length_g.png> <../../1_Resources/images/fi
+lter_length_sp.png> <../../1_Resources/images/DB4_threshold_g.png> <../../1_Res
+ources/images/DB4_threshold_sp.png> <../../1_Resources/images/HWT_threshold_g.p
+ng> <../../1_Resources/images/HWT_threshold_sp.png>]
 LaTeX Font Info:    Font shape `T1/ptm/bx/it' in size <10> not available
-(Font)              Font shape `T1/ptm/b/it' tried instead on input line 170.
+(Font)              Font shape `T1/ptm/b/it' tried instead on input line 244.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 187.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 195.
- [3 <../../1_Resources/images/hard_thresholding.png> <../../1_Resources/images/
-soft_thresholding.png>]
-[4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 195.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 261.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 269.
+
+Underfull \vbox (badness 1939) has occurred while \output is active []
+
+ [5 <../../2_Software/data/cman_512_512.png (PNG copy)>] [6]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 269.
  (533_Project_Paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 195.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 195.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 269.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 269.
 Package rerunfilecheck Info: File `533_Project_Paper.out' has not changed.
-(rerunfilecheck)             Checksum: 47C513326C087369F9ADF256A17E819F;632.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 195.
+(rerunfilecheck)             Checksum: 6AB763EDC9B46F855BA863C75F12CEDC;711.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 269.
  ) 
 Here is how much of TeX's memory you used:
- 14475 strings out of 493333
- 239668 string characters out of 3139171
- 387237 words of memory out of 3000000
- 17699 multiletter control sequences out of 15000+200000
- 42524 words of font info for 105 fonts, out of 3000000 for 9000
+ 14527 strings out of 493333
+ 241748 string characters out of 3139171
+ 389237 words of memory out of 3000000
+ 17742 multiletter control sequences out of 15000+200000
+ 42082 words of font info for 99 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,12n,46p,1020b,466s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 42i,12n,46p,1113b,469s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc} <C:\Users\Schifman 
 Ben\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1000.pk><C:
 /Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program
@@ -1018,9 +1129,9 @@ pe1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public
 8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmbi8a.pfb><C:/Progr
 am Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2
 .9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on 533_Project_Paper.pdf (4 pages, 209530 bytes).
+Output written on 533_Project_Paper.pdf (6 pages, 892410 bytes).
 PDF statistics:
- 154 PDF objects out of 1000 (max. 8388607)
- 25 named destinations out of 1000 (max. 500000)
- 24680 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 191 PDF objects out of 1000 (max. 8388607)
+ 32 named destinations out of 1000 (max. 500000)
+ 24733 words of extra memory for PDF output out of 24883 (max. 10000000)
 

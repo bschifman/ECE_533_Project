@@ -1,0 +1,9 @@
+Filter,PSNR w/ Gaussian Noise,PSNR w/ SP Noise
+Blur,33.652,51.418
+Gaussian Blur,33.901,51.418
+Median,33.991,51.418
+Bilateral,33.02,33.297
+HWT  Soft Threshold,30.433,31.915
+HWT Hard Threshold,32.633,39.664
+DB4 Soft Threshold,26.979,29.358
+DB4 Hard Threshold,26.005,28.338
