@@ -83,7 +83,7 @@ def detFilterLength(img_gnoise, img_spnoise, img):
     psnr_hist = []
     while(i < 5):
         g_out['blur'], g_out['gblur'], g_out['median'], g_out['bilateral'] = standardFilters(img_gnoise,  filter_length_temp, 0)
-        sp_out['blur'], sp_out['gblur'], sp_out['median'], sp_out['bilateral'] = standardFilters(img_spnoise, filter_length_temp, 0)
+        sp_out['blur'], sp_out['gblur'], sp_out['median'], sp_out['bilateral'] = standardFilters(img_spnoise, filter_length_temp, 1)
         psnr_curr = detFilterPSNR(g_out, sp_out, img)
         psnr_hist.append(psnr_curr)
         for j in range(len(filter_length_temp)):
@@ -191,8 +191,8 @@ def detThreshold(HWT_g, HWT_sp, DB4T_g, DB4T_sp, std, img):
         iDB4Tg_hard = pywt.idwt2((temp1,(temp2)),'db4')
         iDB4Tsp_hard = pywt.idwt2((temp3,(temp4)),'db4')           
         
-        psnr = detPeakSNR(iHWTg_soft, iHWTg_hard, iHWTsp_soft, iHWTsp_hard, iDB4Tg_soft, iDB4Tg_hard, iDB4Tsp_soft, iDB4Tsp_hard,
-                   img, psnr, i)
+        psnr = detPeakSNR(iHWTg_soft, iHWTg_hard, iHWTsp_soft, iHWTsp_hard, iDB4Tg_soft,
+                          iDB4Tg_hard, iDB4Tsp_soft, iDB4Tsp_hard, img, psnr, i)
         i += 1
         
     psnr[0,:] = np.nan
@@ -291,7 +291,7 @@ def standardFilters(img, f_length, j):
     blur = cv2.blur(img,(f_length[0,j],f_length[0,j]))
     gblur = cv2.GaussianBlur(img,(f_length[1,j],f_length[1,j]),0)
     median = cv2.medianBlur(img,f_length[2,j])
-    bilateral = cv2.bilateralFilter(img,9,75,75)
+    bilateral = cv2.bilateralFilter(img,f_length[3,j],75,75)
     return(blur, gblur, median, bilateral)
 #%%Save Images    
 def outputImages(g_out, sp_out, cman_gnoise, cman_spnoise):
@@ -304,38 +304,43 @@ def outputImages(g_out, sp_out, cman_gnoise, cman_spnoise):
         file_path = 'data/' + filter + '_sp.png'
         cv2.imwrite(file_path, sp_out[filter])
  
-#%%
+#%%MAIN
+# =============================================================================
 s_time = time.clock()
 cman_gnoise, cman_spnoise, std = genNoisy()
 iterations = 1
 g_out = {'blur' : np.zeros(0), 'gblur' : np.zeros(0),
            'median' : np.zeros(0), 'bilateral' : np.zeros(0), 'IHWT_soft' : np.zeros(0),
-           'IHWT_hard' : np.zeros(0), 'IDB4T_hard' : np.zeros(0), 'IDB4T_hard' : np.zeros(0)}
-           
+           'IHWT_hard' : np.zeros(0), 'IDB4T_soft' : np.zeros(0), 'IDB4T_hard' : np.zeros(0)}
+            
 sp_out = {'blur' : np.zeros(0), 'gblur' : np.zeros(0),
-           'median' : np.zeros(0), 'bilateral' : np.zeros(0), 'IHWT_soft' : np.zeros(0), 'IHWT_hard' : np.zeros(0),
-           'IDB4T_hard' : np.zeros(0), 'IDB4T_hard' : np.zeros(0)}
-
+           'median' : np.zeros(0), 'bilateral' : np.zeros(0), 'IHWT_soft' : np.zeros(0),
+           'IHWT_hard' : np.zeros(0), 'IDB4T_soft' : np.zeros(0), 'IDB4T_hard' : np.zeros(0)}
+ 
 HWT_g = dwt.TwoD_HWT(cman_gnoise,iterations)
 HWT_sp = dwt.TwoD_HWT(cman_spnoise,iterations)
 DB4T_g = pywt.dwt2(cman_gnoise, 'db4')
 DB4T_sp = pywt.dwt2(cman_spnoise, 'db4')
-
+ 
 #This section need only be run once per new image to attain the appropriate Threshold value
-#psnr, T, g_out[' = detThreshold(HWT_g, HWT_sp, DB4T_g, DB4T_sp, std, cman)
-#pltDetThreshold(psnr)
-
+# =============================================================================
+# psnr, T = detThreshold(HWT_g, HWT_sp, DB4T_g, DB4T_sp, std, cman)
+# pltDetThreshold(psnr)
+# =============================================================================
+ 
 f_length, psnr_best, psnr_hist = detFilterLength(cman_gnoise, cman_spnoise, cman)
 #pltPSNRFilters(psnr_hist)
-
+ 
 g_out['blur'], g_out['gblur'], g_out['median'], g_out['bilateral'] = standardFilters(cman_gnoise, f_length, 0)
 sp_out['blur'], sp_out['gblur'], sp_out['median'], sp_out['bilateral'] = standardFilters(cman_spnoise, f_length, 1)
-
+ 
 #Gaussian Noise Thresholding and Inverese Haar Transform
 HWT_soft_g = pywt.threshold(HWT_g, T[0]*0.5*std, 'soft')
 HWT_hard_g = pywt.threshold(HWT_g, T[1]*0.5*std, 'hard')
 g_out['IHWT_soft']= dwt.TwoD_IHWT(HWT_soft_g,iterations)
 g_out['IHWT_hard'] = dwt.TwoD_IHWT(HWT_hard_g,iterations)
+
+
 
 #Salt & Pepper Noise, Thresholding, and Inverese Haar Transform
 HWT_soft_sp = pywt.threshold(HWT_sp, T[2]*0.5*std, 'soft')
@@ -369,6 +374,7 @@ outputImages(g_out, sp_out, cman_gnoise, cman_spnoise)
 e_time = time.clock()
 t_time = e_time - s_time
 print('\n', 'Total_Time: ', round(t_time,2)) 
+# =============================================================================
 
 
 #%%
